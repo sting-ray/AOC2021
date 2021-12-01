@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+    function challenge1() {
+        // var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
+        var input = Object.values(document.getElementById("input").value.split("\n")).map(makeNumber);  //create an array
+        // var input = inputStrings.map(makeNumber);
+        var count = 0;
+        var result = "";
+        var last = null;
+
+        input.forEach(checkGreater);
+
+
+        function checkGreater(value) {
+            // value = parseInt(value); //<-- this.  if only I had known value would be a string and not an interger earlier
+            if (last != null && value > last) {
+                count++;
+                console.log("Last: " + last + ", value:" + value + "Counted!");
+            }
+            else {
+                console.log("Last: " + last + ", value:" + value);
+            }
+            last = value;
+        }
+
+        document.getElementById("challenge1").innerHTML = count;
+        //1297 is wrong
+    }
+
+    //=============================================================================================
+
+    function challenge2() {
+        var input = Object.values(document.getElementById("input").value.split("\n")).map(makeNumber);
+        var count = 0;
+        var result = "";
+        var last = null;
+
+        var sumOfThree = input.map(addTogether);
+
+        function addTogether(value, index, array) {
+            if (index < 2) {
+                return null;
+            }
+            else {
+                return array[index] + array[index-1] + array[index-2];
+            }
+        }
+
+        console.log(sumOfThree);
+
+        sumOfThree.forEach(checkGreater);
+
+        function checkGreater(value) {
+            // value = parseInt(value); //<-- this.  if only I had known value would be a string and not an interger earlier
+            if (last != null && value > last) {
+                count++;
+                console.log("Last: " + last + ", value:" + value + "Counted!");
+            }
+            else {
+                console.log("Last: " + last + ", value:" + value);
+            }
+            last = value;
+        }
+
+        document.getElementById("challenge2").innerHTML = count;
+    }
+
+    function makeNumber(value) {
+        return parseInt(value);
+    }
+
+
+</script>
