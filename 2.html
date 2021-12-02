@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+  function challenge1() {
+    var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
+
+    const submarine = {
+        horizontal: 0,
+        depth: 0
+    }
+
+    for (let i = 0; i < input.length; i++) {
+        let command = input[i].substr(0,1);
+        let distance = parseInt(input[i].substr(input[i].length - 1));
+
+        switch (command) {
+            case 'f': //forwards
+                submarine.horizontal += distance;
+                break;
+            case 'd': //down
+                submarine.depth += distance;
+                break;
+            case 'u': //up
+                submarine.depth -= distance;
+                break;
+        }
+    }
+
+    const result = submarine.horizontal * submarine.depth;
+
+    document.getElementById("challenge1").innerHTML = result;
+  }
+
+  //=============================================================================================
+
+  function challenge2() {
+    var input = Object.values(document.getElementById("input").value.split("\n"));
+
+      const submarine = {
+          horizontal: 0,
+          depth: 0,
+          aim: 0
+      }
+
+      for (let i = 0; i < input.length; i++) {
+          let command = input[i].substr(0, 1);
+          let distance = parseInt(input[i].substr(input[i].length - 1));
+
+          switch (command) {
+              case 'f': //forwards
+                  submarine.horizontal += distance;
+                  submarine.depth += submarine.aim * distance;
+                  break;
+              case 'd': //down
+                  submarine.aim += distance;
+                  break;
+              case 'u': //up
+                  submarine.aim -= distance;
+                  break;
+          }
+      }
+
+      const result = submarine.horizontal * submarine.depth;
+
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>

@@ -12,7 +12,8 @@ Enter in the challenge input:<br>
 
     function challenge1() {
         // var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
-        var input = Object.values(document.getElementById("input").value.split("\n")).map(makeNumber);  //create an array
+        // var input = Object.values(document.getElementById("input").value.split("\n")).map(makeNumber);
+        var input = Object.values(document.getElementById("input").value.split("\n")).map(Number);  //create an array
         // var input = inputStrings.map(makeNumber);
         var count = 0;
         var result = "";
@@ -40,7 +41,8 @@ Enter in the challenge input:<br>
     //=============================================================================================
 
     function challenge2() {
-        var input = Object.values(document.getElementById("input").value.split("\n")).map(makeNumber);
+        // var input = Object.values(document.getElementById("input").value.split("\n")).map(makeNumber);
+        var input = Object.values(document.getElementById("input").value.split("\n")).map(Number);
         var count = 0;
         var result = "";
         var last = null;
