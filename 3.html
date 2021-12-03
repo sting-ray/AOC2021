@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+    function challenge1() {
+        var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
+        const bitCount = new Array(0,0,0,0,0,0,0,0,0,0,0,0);
+        let gamma = '';
+        let epsilon = '';
+
+        for (let position = 0; position < input[0].length; position++) {
+            for (let i = 0; i < input.length; i++) {
+                if (input[i][position] == '1') {
+                    bitCount[position]++;
+                }
+
+            }
+        }
+
+        for (let i = 0; i < bitCount.length; i++) {
+            if (bitCount[i] > input.length / 2) {
+                gamma += '1';
+                epsilon += '0';
+            }
+            else {
+                gamma += '0';
+                epsilon += '1';
+            }
+        }
+
+        gamma = parseInt(gamma, 2);
+        epsilon = parseInt(epsilon, 2);
+
+        result = gamma * epsilon;
+        document.getElementById("challenge1").innerHTML = result;
+    }
+
+    //=============================================================================================
+
+    function challenge2() {
+        var input = Object.values(document.getElementById("input").value.split("\n"));
+
+        let oxygen = [...input];
+        let scrubber = [...input];
+        console.log(scrubber[0]);
+        let position = 0;
+        let count = 0;
+
+        while (oxygen.length > 1) {
+            for (let i = 0; i < oxygen.length; i++) {
+                if (oxygen[i][position] == '1') {
+                    count++;
+                }
+            }
+            console.log(count);
+            console.log(oxygen.length);
+            if (count >= oxygen.length / 2) {
+                console.log('oxygen removing 0s');
+                for (let i = 0; i < oxygen.length; i++) {
+                    if (oxygen[i][position] == '0') {
+                        console.log(oxygen[i]);
+                        oxygen.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            else {
+                console.log('oxygen removing 1s');
+                for (let i = 0; i < oxygen.length; i++) {
+                    if (oxygen[i][position] == '1') {
+                        console.log(oxygen[i]);
+                        oxygen.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            count = 0;
+            position++;
+        }
+        console.log('finished oxygen');
+
+        position = 0;
+        count = 0;
+
+        while (scrubber.length > 1) {
+            console.log('working the scrubber');
+            for (let i = 0; i < scrubber.length; i++) {
+                if (scrubber[i][position] == '1') {
+                    count++;
+                }
+            }
+            console.log(count);
+            console.log(scrubber.length);
+            if (count < scrubber.length / 2) {
+                console.log('scrubber removing 0s');
+                for (let i = 0; i < scrubber.length; i++) {
+                    if (scrubber[i][position] == '0') {
+                        console.log(scrubber[i]);
+                        scrubber.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            else {
+                console.log('scrubber removing 1s');
+                for (let i = 0; i < scrubber.length; i++) {
+                    if (scrubber[i][position] == '1') {
+                        console.log(scrubber[i]);
+                        scrubber.splice(i, 1);
+                        i--;
+                    }
+                }
+            }
+            count = 0;
+            position++;
+        }
+
+        let result = parseInt(oxygen[0], 2) * parseInt(scrubber[0], 2);
+        document.getElementById("challenge2").innerHTML = result;
+    }
+
+
+</script>
