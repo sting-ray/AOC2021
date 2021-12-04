@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+    function Grid(val0, val1, val2, val3, val4) {
+        this.addLineToMatrix = function(line) {
+            const x = [];
+            for (let i=0; i < 14; i = i+3) { //length of a line
+                let square = []
+                square.push(parseInt(line[i] + line[i+1]));
+                square.push(0);
+                x.push(square);
+            }
+            this.matrix.push(x);
+        }
+
+        this.setNumber = function(number) {
+            for (let y=0; y < 5; y++) {
+                for (let x=0; x < 5; x++) {
+                    if (this.matrix[y][x][0] == number) {
+                        this.matrix[y][x][1] = 1;
+                        return true;
+                    }
+                }
+            }
+        }
+
+
+        this.checkBingo = function() {
+            let countX = 0;
+            let countY = 0;
+            for (let y=0; y < 5; y++) {
+                for (let x=0; x < 5; x++) {
+                    if (this.matrix[y][x][1] == 1) {
+                        countX++;
+                    }
+                    if (this.matrix[x][y][1] == 1) {
+                        countY++;
+                    }
+                }
+                if (countX == 5 || countY == 5) {
+                    return this.unmarkedSum();
+                }
+                else {
+                    countX = 0;
+                    countY = 0;
+                }
+            }
+            return false;
+        }
+
+        this.unmarkedSum = function() {
+            let sum = 0;
+            for (let y=0; y < 5; y++) {
+                for (let x=0; x < 5; x++) {
+                    if (this.matrix[y][x][1] == 0) {
+                        sum += this.matrix[y][x][0];
+                    }
+                }
+            }
+            return sum;
+        }
+
+        //functions must be declared before being called
+        this.matrix = []; //y->x->value | activated
+        this.addLineToMatrix(val0);
+        this.addLineToMatrix(val1);
+        this.addLineToMatrix(val2);
+        this.addLineToMatrix(val3);
+        this.addLineToMatrix(val4);
+    }
+
+  function challenge1() {
+    var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
+
+    let draw = input[0].split(",");
+
+    const grids = [];
+      for (let i=2; i < input.length; i = i+6) {
+        grids.push(new Grid(input[i],input[i+1],input[i+2],input[i+3],input[i+4]));
+      }
+
+      main:
+      for (let i=0; i < draw.length; i++) {
+          for (let g=0; g < grids.length; g++) {
+              if (grids[g].setNumber(draw[i])) {
+                  if (totalSum = grids[g].checkBingo()) {
+                      var result = totalSum * draw[i];
+                      break main;
+                  }
+              }
+          }
+      }
+
+
+        // result = grids[0].matrix[4][4][1];
+    document.getElementById("challenge1").innerHTML = result;
+  }
+
+  //=============================================================================================
+
+  function challenge2() {
+    var input = Object.values(document.getElementById("input").value.split("\n"));
+
+    let draw = input[0].split(",");
+
+    const grids = [];
+    for (let i=2; i < input.length; i = i+6) {
+      grids.push(new Grid(input[i],input[i+1],input[i+2],input[i+3],input[i+4]));
+    }
+
+    main:
+    for (let i=0; i < draw.length; i++) {
+        console.log("draw: " + draw[i]);
+        for (let g=0; g < grids.length; g++) {
+            if (grids[g].setNumber(draw[i])) {
+                if (grids[g].checkBingo()) {
+                    if (grids.length == 1) {
+                        var result = grids[g].unmarkedSum() * draw[i];
+                        break main;
+                    }
+                    else {
+                        console.log("splicing:" + g);
+                        grids.splice(g, 1);
+                        g--;
+                    }
+                }
+            }
+        }
+    }
+
+
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>
