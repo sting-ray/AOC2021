@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+  class Grid {
+      constructor() {
+          this.matrix = [];//[y][x].int
+          for (let y = 0; y < 1000; y++) {
+              this.matrix.push([]);
+              for (let x = 0; x < 1000; x++) {
+                  this.matrix[y].push (0);
+              }
+          }
+      }
+
+
+      putStraightLine(x1, x2, y1, y2) {
+          if (x1 < x2) {
+              //right
+              console.log("right");
+              for (let x = x1; x <= x2; x++) {
+                  this.matrix[y1][x]++;
+              }
+          }
+          else if (x1 > x2) {
+              //left
+              console.log("left");
+              for (let x = x2; x <= x1; x++) {
+                  this.matrix[y1][x]++;
+              }
+          }
+          else if (y1 < y2) {
+              //down
+              console.log("down");
+              for (let y = y1; y <= y2; y++) {
+                  this.matrix[y][x1]++;
+              }
+          }
+          else if (y1 > y2) {
+              //up
+              console.log("up");
+              for (let y = y2; y <= y1; y++) {
+                  this.matrix[y][x1]++;
+              }
+          }
+      }
+
+      putDiagonalLine(x1, x2, y1, y2) {
+          if (x1 < x2 && y1 < y2) {
+              console.log("right down");
+              let distance = x2 - x1;
+              for (let d = 0; d <= distance; d++) {
+                  this.matrix[d+y1][d+x1]++;
+              }
+          }
+          else if (x1 > x2 && y1 < y2) {
+              console.log("left down");
+              let distance = x1 - x2;
+              for (let d = 0; d <= distance; d++) {
+                  this.matrix[d+y1][x1-d]++;
+              }
+          }
+          else if (x1 > x2 && y1 > y2) {
+              console.log("left up");
+              let distance = x1 - x2;
+              for (let d=0; d <= distance; d++) {
+                  this.matrix[y1-d][x1-d]++;
+              }
+          }
+          else if (x1 < x2 && y1 > y2) {
+              console.log("right up");
+              let distance = x2 - x1;
+              for (let d = 0; d <= distance; d++) {
+                  this.matrix[y1-d][d+x1]++;
+              }
+          }
+      }
+
+      countOverlap() {
+          let count = 0;
+          for (let y = 0; y < 1000; y++) {
+              for (let x = 0; x < 1000; x++) {
+                  if (this.matrix[y][x] > 1) {
+                      count++;
+                      // console.log("x" + x + " y" + y);
+                  }
+              }
+          }
+          return count;
+      }
+
+      draw() { // for troubleshooting
+          let image = "";
+          for (let y = 0; y < 1000; y++) {
+              for (let x = 0; x < 1000; x++) {
+                  image += this.matrix[y][x];
+              }
+              image += "\n";
+          }
+          return image;
+      }
+  }
+  const grid = new Grid();
+
+
+  class ParseInput {
+      constructor() {
+          this.x1 = null;
+          this.x2 = null;
+          this.y1 = null;
+          this.y2 = null;
+      }
+
+      putValues(valueInput) {
+          let lineSplit = valueInput.split(" ");
+          let one = lineSplit[0].split(",");
+          this.x1 = parseInt(one[0]);
+          this.y1 = parseInt(one[1]);
+          let two = lineSplit[2].split(",");
+          this.x2 = parseInt(two[0]);
+          this.y2 = parseInt(two[1]);
+      }
+
+      checkStraight() {
+          if (this.x1 == this.x2 || this.y1 == this.y2) {
+              return true;
+          }
+          else {
+              // console.log("diagonal " + this.x1 + " " + this.x2 + " || " + this.y1 + " " + this.y2);
+              return false;
+          }
+      }
+
+      reset() {
+          this.x1 = null;
+          this.x2 = null;
+          this.y1 = null;
+          this.y2 = null;
+      }
+
+  }
+    const parseInput = new ParseInput();
+
+    function challenge1() {
+        var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
+
+        for (let i=0; i < input.length; i++) {
+            parseInput.putValues(input[i]);
+            if (parseInput.checkStraight()) {
+                console.log(input[i]);
+                grid.putStraightLine(parseInput.x1, parseInput.x2, parseInput.y1, parseInput.y2);
+
+                // console.log(grid.draw());
+            }
+            parseInput.reset(); // probably not needed
+        }
+
+        let result = grid.countOverlap();
+        document.getElementById("challenge1").innerHTML = result;
+        //7221 is too low.
+        //98002 is too high.
+        //once again, it was doing string comparisons instead of int comparisons.  Must remember to parseInt() everything in JS!
+    }
+
+  //=============================================================================================
+
+  function challenge2() {
+    var input = Object.values(document.getElementById("input").value.split("\n"));
+
+      for (let i=0; i < input.length; i++) {
+          parseInput.putValues(input[i]);
+          if (parseInput.checkStraight()) {
+              console.log(input[i]);
+              grid.putStraightLine(parseInput.x1, parseInput.x2, parseInput.y1, parseInput.y2);
+          }
+          else {
+              console.log(input[i]);
+              grid.putDiagonalLine(parseInput.x1, parseInput.x2, parseInput.y1, parseInput.y2);
+          }
+          parseInput.reset(); // probably not needed
+      }
+
+      let result = grid.countOverlap();
+
+
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>
