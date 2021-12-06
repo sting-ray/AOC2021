@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+
+
+  function challenge1() {
+      //always remember to parseInt();
+    var input = Object.values(document.getElementById("input").value.split(","));  //create an array
+
+    let fish = [];
+    let newFish = 0;
+    for (let i=0; i < input.length; i++) {
+        fish.push(parseInt(input[i]));
+    }
+
+    for (let day=0; day < 80; day++) {
+        newFish = 0;
+        //loop through fish and decrease days or spawn new fish
+        for (let i=0; i < fish.length; i++) {
+            if (fish[i] > 0) {
+                fish[i]--;
+            }
+            else {
+                fish[i] = 6;
+                newFish++;
+            }
+        }
+        //make new fish
+        for (let i=0; i < newFish; i++) {
+            fish.push(8);
+        }
+        // console.log(fish);
+    }
+    let result = fish.length;
+    document.getElementById("challenge1").innerHTML = result;
+  }
+
+  //=============================================================================================
+
+  function challenge2() {
+    var input = Object.values(document.getElementById("input").value.split(","));
+
+      let fish = [0,0,0,0,0,0,0,0,0];
+      let newFish = 0;
+      for (let i=0; i < input.length; i++) {
+          fish[parseInt(input[i])]++;
+      }
+      console.log(fish);
+
+      for (let day=0; day < 256; day++) {
+          newFish = fish[0];
+          fish[0] = 0;
+
+          for (let i=1; i <= 8; i++) {
+              fish[i-1] = fish[i];
+          }
+
+          fish[6] += newFish;
+          fish[8] = newFish;
+          // console.log(fish);
+      }
+
+      let result = 0;
+
+      for (let i=0; i < fish.length; i++) {
+          result += fish[i];
+      }
+
+
+
+
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>
