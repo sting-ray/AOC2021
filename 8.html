@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+
+
+  function challenge1() {
+    //always remember to parseInt();
+    var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array
+    let result = 0;
+    for (let i = 0; i < input.length; i++) {
+        line = input[i].split(" | ");
+        values = line[1].split(" ");
+        console.log(values);
+
+        for (let v = 0; v < values.length; v++) {
+            if (values[v].length == 2 || values[v].length == 4 || values[v].length == 3 || values[v].length == 7) {
+                result++;
+            }
+        }
+
+    }
+
+    document.getElementById("challenge1").innerHTML = result;
+  }
+
+  //=============================================================================================
+
+  function challenge2() {
+    var input = Object.values(document.getElementById("input").value.split("\n"));
+    let result = 0;
+    let number = ["","","","","","","","","",""];
+
+    function checkMatch(first, second, amount) {
+        let count = 0;
+
+        for (let f = 0; f < first.length; f++) {
+            for (let s = 0; s < second.length; s++) {
+                if (first[f] == second[s]) {
+                    count++
+                }
+            }
+        }
+
+        if (amount == "all") {
+            if (count == first.length && count == second.length) {
+                return true;
+            }
+        }
+        else if (count == amount) {
+            return true;
+        }
+    }
+
+    for (let i = 0; i < input.length; i++) {
+        let line = input[i].split(" | ");
+        let inputLine = line[0].split(" ");
+        let outputLine = line[1].split(" ");
+
+        //Let's find those numbers!
+        console.log(inputLine);
+        for (let l = 0; l < inputLine.length; l++) {
+            if (inputLine[l].length == 2) { //number 1
+                number[1] = inputLine[l];
+            }
+            if (inputLine[l].length == 4) { //number 4
+                number[4] = inputLine[l];
+            }
+            if (inputLine[l].length == 3) { //number 7
+                number[7] = inputLine[l];
+            }
+            if (inputLine[l].length == 7) { //number 8
+                number[8] = inputLine[l];
+            }
+        }
+
+        for (let l = 0; l < inputLine.length; l++) {
+            if (inputLine[l].length == 6 && checkMatch(number[1], inputLine[l], 1)) { //number 6
+                number[6] = inputLine[l];
+            }
+            if (inputLine[l].length == 5 && checkMatch(number[1], inputLine[l], 2)) { //number 3
+                number[3] = inputLine[l];
+            }
+            if (inputLine[l].length == 5 && checkMatch(number[4], inputLine[l], 2)) { //number 2
+                number[2] = inputLine[l];
+            }
+            if (inputLine[l].length == 5 && checkMatch(number[4], inputLine[l], 3) && checkMatch(number[1], inputLine[l], 1)) { //number 5
+                number[5] = inputLine[l];
+            }
+            if (inputLine[l].length == 6 && checkMatch(number[4], inputLine[l], 3) && checkMatch(number[1], inputLine[l], 2)) { //number 0
+                number[0] = inputLine[l];
+            }
+            if (inputLine[l].length == 6 && checkMatch(number[4], inputLine[l], 4)) { //number 9
+                number[9] = inputLine[l];
+            }
+        }
+        console.log(number);
+        //we now have all our numbers
+
+        let lineNumber = "";
+        for (let o = 0; o < outputLine.length; o++) {
+            console.log (outputLine[o]);
+            for (let n = 0; n < number.length; n++) {
+                if (checkMatch(outputLine[o], number[n], "all")) {
+                    console.log(n + " " + outputLine[o] + " " + number[n]);
+                    lineNumber += n;
+                }
+            }
+        }
+        console.log(lineNumber);
+        result += parseInt(lineNumber);
+
+    }
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>
