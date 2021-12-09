@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+
+
+  function challenge1() {
+    //always remember to parseInt();
+    var input = Object.values(document.getElementById("input").value.split("\n"));  //create an array'
+    let result = 0;
+
+    for (let r = 0; r < input.length; r++) {
+        for (let c = 0; c < input[r].length; c++) {
+            if (c == input[r].length-1 || input[r][c] < input[r][c+1]) { //right
+                if (c == 0 || input[r][c] < input[r][c-1]) { //left
+                    if (r == 0 || input[r][c] < input[r-1][c]) { //up
+                        if (r == input.length-1 || input[r][c] < input[r+1][c]) { //down
+                            console.log(input[r][c]);
+                            result += parseInt(input[r][c]) + 1;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    document.getElementById("challenge1").innerHTML = result;
+  }
+
+  //=============================================================================================
+
+  class Basin {
+      constructor(row, column, value, input) {
+          this.grid = [[parseInt(row), parseInt(column), parseInt(value)]];
+
+          for (let i = 0; i < this.grid.length; i++) {
+              let row = this.grid[i][0];
+              let column = this.grid[i][1];
+              let value = this.grid[i][2];
+              if (row != 0 && value < input[row-1][column] && input[row-1][column] != 9) { //up
+                  if (!this.checkGrid(row-1, column)) {
+                      this.grid.push([row-1, column, parseInt(input[row-1][column])]);
+                  }
+              }
+              if (column != input[row].length-1 && value < input[row][column+1] && input[row][column+1] != 9) { //right
+                  if (!this.checkGrid(row, column+1)) {
+                      this.grid.push([row, column+1, parseInt(input[row][column+1])]);
+                  }
+              }
+              if (row != input.length-1 && value < input[row+1][column] && input[row+1][column] != 9) { //down
+                  if (!this.checkGrid(row+1, column)) {
+                      this.grid.push([row+1, column, parseInt(input[row+1][column])]);
+                  }
+              }
+              if (column != 0 && value < input[row][column-1] && input[row][column-1] != 9) { //left
+                  if (!this.checkGrid(row, column-1)) {
+                      this.grid.push([row, column-1, parseInt(input[row][column-1])]);
+                  }
+              }
+          }
+          // console.log(this.grid);
+          console.log("size: " + this.grid.length);
+          this.total = this.grid.length;
+      }
+
+      checkGrid(row, column) {
+          for (let i = 0; i < this.grid.length; i++) {
+              if (this.grid[i][0] == row && this.grid[i][1] == column) {
+                  return true;
+              }
+          }
+      }
+  }
+
+  function challenge2() {
+    let input = Object.values(document.getElementById("input").value.split("\n"));
+    const basin = [];
+
+      for (let r = 0; r < input.length; r++) {
+          for (let c = 0; c < input[r].length; c++) {
+              if (c == input[r].length-1 || input[r][c] < input[r][c+1]) { //right
+                  if (c == 0 || input[r][c] < input[r][c-1]) { //left
+                      if (r == 0 || input[r][c] < input[r-1][c]) { //up
+                          if (r == input.length-1 || input[r][c] < input[r+1][c]) { //down
+                              console.log(input[r][c]);
+                              basin.push(new Basin(r, c, input[r][c], input));
+                          }
+                      }
+                  }
+              }
+          }
+      }
+
+      let sizes = [];
+
+      for (let i = 0; i < basin.length; i++) {
+          sizes.push(basin[i].total);
+      }
+      sizes.sort(function(a, b){return b-a});
+      console.log(sizes);
+
+      const result = sizes[0] * sizes[1] * sizes[2];
+
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>
