@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+function getInput() {
+    //always remember to parseInt() if needed;
+    let input = Object.values(document.getElementById("input").value.split("\n"));
+    return input;
+}
+//=============================================================================================
+
+function findError(line) {
+    // console.log(line);
+    let changedLine = false;
+    for (let c=0; c < line.length-1; c++) {
+
+        if (line[c+1] == ')' && (line[c] == '{' || line[c] == '[' || line[c] == '<')) {
+            // console.log('Found Error: ' + line[c] + line[c+1]);
+            return line[c+1];
+        }
+        else if (line[c+1] == '}' && (line[c] == '(' || line[c] == '[' || line[c] == '<')) {
+            // console.log('Found Error: ' + line[c] + line[c+1]);
+            return line[c+1];
+        }
+        else if (line[c+1] == ']' && (line[c] == '(' || line[c] == '{' || line[c] == '<')) {
+            // console.log('Found Error: ' + line[c] + line[c+1]);
+            return line[c+1];
+        }
+        else if (line[c+1] == '>' && (line[c] == '(' || line[c] == '[' || line[c] == '{')) {
+            // console.log('Found Error: ' + line[c] + line[c+1]);
+            return line[c+1];
+        }
+
+        switch (line[c] + line[c+1]) {
+            case '()':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+            case '{}':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+            case '[]':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+            case '<>':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+        }
+
+    }
+    if (changedLine == true) {
+        return findError(line);
+    }
+    return false;
+}
+
+function challenge1() {
+    let input = getInput();
+    let result = 0;
+
+    for (let i=0; i < input.length; i++) {
+        console.log(input[i]);
+        let line = input[i].split('');
+        let found = findError(line);
+        console.log(found);
+
+        if (found == ')') {
+            result += 3;
+        }
+        else if (found == ']') {
+            result += 57;
+        }
+        else if (found == '}') {
+            result += 1197;
+        }
+        else if (found == '>') {
+            result += 25137;
+        }
+    }
+
+    document.getElementById("challenge1").innerHTML = result;
+}
+
+//=============================================================================================
+
+function stripLine(line) {
+    let changedLine = false;
+    for (let c=0; c < line.length-1; c++) {
+        switch (line[c] + line[c+1]) {
+            case '()':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+            case '{}':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+            case '[]':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+            case '<>':
+                line.splice(c, 2);
+                changedLine = true;
+                break;
+        }
+    }
+    if (changedLine == true) {
+        findError(line);
+    }
+    return line;
+}
+
+function challenge2() {
+    let input = getInput();
+    const scores = [];
+    for (let i=0; i < input.length; i++) {
+        let line = input[i].split('');
+        if (!findError(line)) {
+            console.log(input[i]);
+            line = input[i].split('');
+            console.log(line);
+            let leftOver = stripLine(line);
+            console.log(leftOver);
+
+            let score = 0;
+            for (let l = leftOver.length-1; l >= 0; l--) {
+                score *= 5;
+                switch(leftOver[l]) {
+                    case '(':
+                        score += 1;
+                        break;
+                    case '[':
+                        score += 2;
+                        break;
+                    case '{':
+                        score += 3;
+                        break;
+                    case '<':
+                        score += 4;
+                        break
+                }
+            }
+            console.log('Score:' + score);
+            scores.push(score);
+        }
+    }
+
+    scores.sort(function(a, b){return a-b});
+    console.log(scores);
+    const result = scores[Math.floor(scores.length/2)];
+    document.getElementById("challenge2").innerHTML = result;
+}
+
+
+</script>
