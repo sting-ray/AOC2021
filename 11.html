@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+    function getInput() {
+        //always remember to parseInt() if needed;
+        let input = Object.values(document.getElementById("input").value.split("\n"));
+        return input;
+    }
+    //=============================================================================================
+
+    class Grid {
+        constructor(input) {
+            this.flash = 0;
+            this.matrix = [];
+            for (let r = 0; r < input.length; r++) {
+                this.matrix.push([]);
+                for (let c = 0; c < input[r].length; c++) {
+                    this.matrix[r].push(input[r][c]);
+                }
+            }
+        }
+        progressStep() {
+            for (let r = 0; r < this.matrix.length; r++) {
+                for (let c = 0; c < this.matrix[r].length; c++) {
+                    this.matrix[r][c]++;
+                }
+            }
+            this.checkFlash();
+        }
+
+        checkFlash() {
+            let flashed = false;
+            for (let r = 0; r < this.matrix.length; r++) {
+                for (let c = 0; c < this.matrix[r].length; c++) {
+                    if (this.matrix[r][c] > 9) {
+                        this.flash++;
+                        this.matrix[r][c] = 0;
+                        flashed = true;
+                        this.flashed(r,c);
+                    }
+                }
+            }
+            if (flashed) {
+                this.checkFlash();
+            }
+        }
+
+        flashed(row,column) {
+            for (let r = row-1; r < row + 2; r++) {
+                for (let c = column - 1; c < column + 2; c++) {
+                    if (r >= 0 && r < this.matrix.length && c >= 0 && c < this.matrix[r].length) {
+                        if (this.matrix[r][c] > 0) {
+                            this.matrix[r][c]++;
+                        }
+                    }
+                }
+            }
+        }
+
+        checkAllFlash() {
+            for (let r = 0; r < this.matrix.length; r++) {
+                for (let c = 0; c < this.matrix[r].length; c++) {
+                    if (this.matrix[r][c] != 0) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+    }
+
+    function challenge1() {
+        let input = getInput();
+        let grid = new Grid(input);
+
+        for (let i = 0; i< 100; i++) {
+            grid.progressStep();
+        }
+
+        console.log(grid.matrix);
+
+        let result = grid.flash;
+
+        document.getElementById("challenge1").innerHTML = result;
+    }
+
+    //=============================================================================================
+
+
+    function challenge2() {
+        let input = getInput();
+        let grid = new Grid(input);
+        let result = 0;
+
+        for (let i = 0; i < 999; i++) {
+            grid.progressStep();
+            if (grid.checkAllFlash()) {
+                result = i + 1;
+                break;
+            }
+        }
+
+        console.log(grid.matrix);
+
+        document.getElementById("challenge2").innerHTML = result;
+    }
+
+
+</script>
