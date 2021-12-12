@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+  function getInput() {
+    //always remember to parseInt() if needed;
+    let input = Object.values(document.getElementById("input").value.split("\n"));
+    return input;
+  }
+  //=============================================================================================
+
+  function upperCase(input) {
+    if (input == input.toUpperCase()) {
+      return true;
+    }
+  }
+
+  class Cave {
+    constructor(name, connector) {
+      this.name = name;
+      this.connection = [];
+      this.connection.push(connector);
+      if (upperCase(name)) {
+        this.big = true;
+      }
+      else {
+        this.big = false;
+      }
+    }
+
+    checkExists(name) {
+      if (this.name == name) {
+        return true;
+      }
+    }
+
+    addConnection(connector) {
+      this.connection.push(connector);
+    }
+
+    checkPath(visitedOld, caves, points, length) { //feed [start] in to start off process
+        let visited = [...visitedOld];
+        visited.push(this.name);
+        length++;
+
+        for (let c = 0; c < this.connection.length; c++) {
+            console.log(this.name);
+            console.log (length);
+            console.log('checking: ' + this.connection[c]);
+            console.log('visited: ' + visited);
+            console.log('places to explore: ' + this.connection);
+            if (this.connection[c] == 'end') {
+                visited.push(this.connection[c]);
+                points.points++
+                console.log('finish');
+            }
+            else {
+                if (upperCase(this.connection[c])) { //is it a big cave?
+                    // visited.push(this.connection[c]);
+                    console.log('big cave');
+                    caves[this.connection[c]].checkPath(visited, caves, points, length);
+                }
+                else if (!visited.includes(this.connection[c])) {
+                    // visited.push(this.connection[c]);
+                    console.log('small cave');
+                    caves[this.connection[c]].checkPath(visited, caves, points, length);
+                }
+            }
+        }
+    }
+
+      checkPath2(visitedOld, caves, points, length, visitSmall) { //feed [start] in to start off process
+          let visited = [...visitedOld];
+          visited.push(this.name);
+          length++;
+
+          for (let c = 0; c < this.connection.length; c++) {
+              // console.log(this.name);
+              // console.log (length);
+              // console.log('checking: ' + this.connection[c]);
+              // console.log('visited: ' + visited);
+              // console.log('places to explore: ' + this.connection);
+              // console.log('visitSmall: ' + visitSmall);
+              if (this.connection[c] == 'end') {
+                  visited.push(this.connection[c]);
+                  points.points++
+                  // console.log('finish');
+              }
+              else {
+                  if (upperCase(this.connection[c])) { //is it a big cave?
+                      // visited.push(this.connection[c]);
+                      // console.log('big cave');
+                      caves[this.connection[c]].checkPath2(visited, caves, points, length, visitSmall);
+                  }
+                  else if (!visited.includes(this.connection[c])) {
+                      // visited.push(this.connection[c]);
+                      // console.log('small cave');
+                      caves[this.connection[c]].checkPath2(visited, caves, points, length, visitSmall);
+                  }
+                  else if (!visitSmall && this.connection[c] != 'start') {
+                      // console.log('small cave 2nd time');
+                      caves[this.connection[c]].checkPath2(visited, caves, points, length, true);
+                  }
+              }
+          }
+      }
+  }
+
+
+
+
+  function challenge1() {
+    let input = getInput();
+
+    const points = {
+      points: 0
+    }
+
+
+    const caves = {};
+
+    {
+      let line = input[0].split('-');
+      caves[line[0]] = new Cave(line[0], line[1]);
+      caves[line[1]] = new Cave(line[1], line[0]);
+    }
+
+    for (let i = 1; i < input.length; i++) {
+      let line = input[i].split('-');
+
+      if (caves[line[0]]) {
+          caves[line[0]].addConnection(line[1]);
+      }
+      else {
+          caves[line[0]] = new Cave(line[0], line[1]);
+      }
+
+      if (caves[line[1]]) {
+          caves[line[1]].addConnection(line[0]);
+      }
+      else {
+          caves[line[1]] = new Cave(line[1], line[0]);
+      }
+    }
+    console.log(caves);
+
+    caves.start.checkPath([], caves, points, 0);
+
+    result = points.points;
+
+
+    document.getElementById("challenge1").innerHTML = result;
+  }
+
+  //=============================================================================================
+
+
+  function challenge2() {
+    let input = getInput();
+
+
+      const points = {
+          points: 0
+      }
+
+
+      const caves = {};
+
+      {
+          let line = input[0].split('-');
+          caves[line[0]] = new Cave(line[0], line[1]);
+          caves[line[1]] = new Cave(line[1], line[0]);
+      }
+
+      for (let i = 1; i < input.length; i++) {
+          let line = input[i].split('-');
+
+          if (caves[line[0]]) {
+              caves[line[0]].addConnection(line[1]);
+          }
+          else {
+              caves[line[0]] = new Cave(line[0], line[1]);
+          }
+
+          if (caves[line[1]]) {
+              caves[line[1]].addConnection(line[0]);
+          }
+          else {
+              caves[line[1]] = new Cave(line[1], line[0]);
+          }
+      }
+      console.log(caves);
+
+      caves.start.checkPath2([], caves, points, 0, false);
+
+      result = points.points;
+
+
+    document.getElementById("challenge2").innerHTML = result;
+  }
+
+
+</script>
