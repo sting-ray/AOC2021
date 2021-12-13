@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+    function getInput() {
+        //always remember to parseInt() if needed;
+        let input = Object.values(document.getElementById("input").value.split("\n"));
+        return input;
+    }
+
+    //=============================================================================================
+
+    class Paper {
+        constructor() {
+            this.dots = []; // [[x,y][x,y]]
+        }
+
+        drawDots() {
+            let bigX = 0;
+            let bigY = 0;
+            let drawing = '<table>';
+            for (let i = 0; i < this.dots.length; i++) {
+                if (this.dots[i][0] > bigX) {
+                    bigX = this.dots[i][0];
+                }
+                if (this.dots[i][1] > bigY) {
+                    bigY = this.dots[i][1];
+                }
+            }
+            for (let y = 0; y <= bigY; y++) {
+                drawing += '<tr>';
+                for (let x = 0; x <= bigX; x++) {
+                    let foundDot = false;
+                    for (let i = 0; i < this.dots.length; i++) {
+                        if (this.dots[i][0] == x && this.dots[i][1] == y) {
+                            foundDot = true;
+                        }
+                    }
+                    if (foundDot) {
+                        drawing += '<td style="background-color:#FF0000">#</td>';
+                    }
+                    else {
+                        drawing += '<td style="background-color:#00FF00">.</td>';
+                    }
+                }
+                drawing += '</tr>';
+            }
+            drawing += '</table>';
+            return drawing;
+        }
+
+        addDot(input) {
+            let xy = input.split(",");
+            let x = parseInt(xy[0]);
+            let y = parseInt(xy[1]);
+            this.dots.push([x, y]);
+        }
+
+        updateDot(x,y) {
+            let duplicate = false;
+            for (let i=0; i < this.dots.length; i++) {
+                if (this.dots[i][0] == x) {
+                    if (this.dots[i][1] == y) {
+                        duplicate = true;
+                        // console.log('found duplicate');
+                    }
+                }
+                // console.log(duplicate);
+            }
+            if (duplicate == false) {
+                this.dots.push([x,y]);
+                // console.log('updating dots');
+            }
+        }
+
+        fold(input) {
+            let inputSplit = input.slice(11).split('=');
+            let action = inputSplit[0];
+            let fold = parseInt(inputSplit[1]);
+            const oldDots = [...this.dots];
+            const splice = [];
+            if (action == 'x') {
+                for (let i = 0; i < oldDots.length; i++) {
+                    if (oldDots[i][0] > fold) {
+                        // console.log('start x' + oldDots[i][0] + ' y' + oldDots[i][1]);
+                        let distance = oldDots[i][0] - fold;
+                        let x = fold - distance;
+                        let y = oldDots[i][1];
+                        splice.push(i);
+                        this.updateDot(x,y);
+                        // console.log('finish x' + x + ' y' + y);
+                    }
+                }
+            }
+            else if (action == 'y') {
+                for (let i = 0; i < oldDots.length; i++) {
+                    if (oldDots[i][1] > fold) {
+                        // console.log('start x' + this.dots[i][0] + ' y' + this.dots[i][1]);
+                        let distance = oldDots[i][1] - fold;
+                        let x = oldDots[i][0];
+                        let y = fold - distance;
+                        splice.push(i);
+                        this.updateDot(x,y);
+                        // console.log('finish x' + x + ' y' + y);
+                    }
+                }
+            }
+            splice.reverse();
+            for (let i=0; i < splice.length; i++) {
+                this.dots.splice(splice[i], 1);
+            }
+        }
+    }
+
+
+    //=============================================================================================
+
+    function challenge1() {
+        let input = getInput();
+        const paper = new Paper();
+
+        for (let i=0; i < input.length; i++) {
+            if (!isNaN(parseInt(input[i][0]))) {
+                paper.addDot(input[i]);
+            }
+            else if (input[i][0] == 'f') {
+                // console.log('array: ' + paper.dots);
+                paper.fold(input[i]);
+            }
+        }
+
+        let result = paper.dots.length;
+
+        // console.log(paper.dots);
+
+
+
+        document.getElementById("challenge1").innerHTML = result;
+    }
+
+    //=============================================================================================
+
+
+    function challenge2() {
+        let input = getInput();
+        const paper = new Paper();
+
+        for (let i=0; i < input.length; i++) {
+            if (!isNaN(parseInt(input[i][0]))) {
+                paper.addDot(input[i]);
+            }
+            else if (input[i][0] == 'f') {
+                // console.log('array: ' + paper.dots);
+                paper.fold(input[i]);
+            }
+        }
+
+        let result = paper.drawDots();
+
+        document.getElementById("challenge2").innerHTML = result;
+    }
+
+
+</script>
