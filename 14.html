@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<body>
+Enter in the challenge input:<br>
+<textarea name="input" id="input" rows = "10" cols="50"></textarea><br>
+<button onclick="challenge1()">Challenge 1</button><br>
+<div id="challenge1"></div><br>
+<button onclick="challenge2()">Challenge 2</button><br>
+<div id="challenge2"></div><br>
+
+<script>
+
+    function getInput() {
+        //always remember to parseInt() if needed;
+        let input = Object.values(document.getElementById("input").value.split("\n"));
+        return input;
+    }
+
+    //=============================================================================================
+
+
+    //=============================================================================================
+
+    function challenge1() {
+        let input = getInput();
+
+        let polymer = input[0].split("");
+        let newPolymer = [...polymer];
+        let rules = [];
+
+        console.log(polymer);
+
+        for (let i = 2; i < input.length; i++) {
+            rules.push(input[i].split(" -> "));
+        }
+
+        for (let l = 0; l < 10; l++) {
+            for (let p = polymer.length-1; p > 0; p--) {
+                for (let r = 0; r < rules.length; r++) {
+                    // console.log(polymer[p-1] + " = " + rules[r][0][0] + " && " + polymer[p] + " = " + rules[r][0][1]);
+                    if (polymer[p-1] == rules[r][0][0] && polymer[p] == rules[r][0][1]) {
+                        newPolymer.splice(p, 0, rules[r][1]);
+                    }
+                }
+            }
+            polymer = [...newPolymer];
+            // console.log(polymer);
+        }
+        console.log(polymer);
+
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+        const polymerCount = [];
+
+        for (let a = 0; a < alphabet.length; a++) {
+            let count = 0;
+            for (let p = 0; p < polymer.length; p++) {
+                if (alphabet[a] == polymer[p]) {
+                    count++;
+                }
+            }
+            if (count > 0) {
+                polymerCount.push(count);
+            }
+        }
+        polymerCount.sort(function(a, b){return a-b});
+        console.log(polymerCount);
+        let result = polymerCount[polymerCount.length-1] - polymerCount[0];
+
+        document.getElementById("challenge1").innerHTML = result;
+    }
+
+    //=============================================================================================
+
+    class Pair {
+        constructor(name, target) {
+            this.value = 0;
+            this.newValue = 0;
+            this.name = name
+            this.target1 = name[0] + target;
+            this.target2 = target + name[1];
+        }
+
+        plusOne() {
+            this.newValue++
+        }
+
+    }
+
+
+    function challenge2() {
+        let input = getInput();
+
+        let polymerStart = input[0].split("");
+        // let newPolymer = [...polymer];
+        let rules = [];
+
+        const polymer = {};
+        const newPolymer = {};
+        const letters = {};
+
+        // console.log(polymer);
+
+        for (let i = 2; i < input.length; i++) {
+            rules.push(input[i].split(" -> "));
+        }
+
+
+        for (let r = 0; r < rules.length; r++) {
+            // polymer[rules[r][0]] = new Pair(rules[r][0], rules[r][1]);
+            polymer[rules[r][0]] = 0;
+            newPolymer[rules[r][0]] = 0;
+            letters[rules[r][0][0]] = 0;
+            letters[rules[r][0][1]] = 0;
+        }
+        console.log(letters);
+
+        for (let p = 0; p < polymerStart.length-1; p++) {
+            let pair = polymerStart[p] + polymerStart[p+1];
+            polymer[pair]++;
+        //     polymer[pair].plusOne();
+        }
+
+        for (let p = 0; p < polymerStart.length; p++) {
+            letters[polymerStart[p]]++;
+        }
+
+        for (let l = 0; l < 40; l++) {
+            for (let r = 0; r < rules.length; r++) {
+                let pair = rules[r][0]
+                let target1 = rules[r][0][0] + rules[r][1];
+                let target2 = rules[r][1] + rules[r][0][1];
+                newPolymer[target1] += polymer[pair];
+                newPolymer[target2] += polymer[pair];
+                letters[rules[r][1]] += polymer[pair];
+                polymer[pair] = 0;
+
+            }
+            for (let r = 0; r < rules.length; r++) {
+                let pair = rules[r][0]
+                polymer[pair] += newPolymer[pair];
+                newPolymer[pair] = 0;
+            }
+        }
+        console.log(letters);
+
+        const values = Object.values(letters);
+
+        values.sort(function(a, b){return a-b});
+        let result = values[values.length-1] - values[0];
+
+        document.getElementById("challenge2").innerHTML = result;
+  }
+
+</script>
